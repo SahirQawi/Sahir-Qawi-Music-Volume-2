@@ -1,533 +1,272 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>SAHIR QAWI - AGI ORIGINALS VOL 2</title>
-
   <style>
-
     @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 
-
-
     :root {
-
       --neon-cyan: #00FFFF;
-
       --neon-pink: #DE70A1;
-
       --bg-black: #080808;
-
     }
-
-
 
     html, body {
-
       height: 100%;
-
       margin: 0;
-
       background-color: var(--bg-black);
-
-      overflow: hidden; /* Prevents the outer body from scrolling */
-
+      overflow: hidden;
     }
-
-
 
     body { 
-
       margin: 0 auto; 
-
       font-family: 'Russo One', sans-serif;
-
       color: var(--neon-cyan);
-
-      max-width: 450px; 
-
+      /* Changed to 100% for better mobile/Google Sites fit */
+      width: 100%; 
       display: flex;
-
       flex-direction: column;
-
       box-sizing: border-box;
-
       height: 100vh;
-
     }
-
-
 
     /* --- STICKY TOP SECTION --- */
-
     .sticky-top {
-
       flex-shrink: 0;
-
       padding: 20px 15px 10px 15px;
-
       background: var(--bg-black);
-
       z-index: 10;
-
       border-bottom: 1px solid #1a1a1a;
-
     }
-
-
 
     .player-header { 
-
       text-align: center; 
-
       margin-bottom: 15px; 
-
       line-height: 1.1;
-
     }
-
     
-
     .line-1 { font-size: 24px; letter-spacing: 4px; display: block; }
-
     .line-2 { font-size: 12px; letter-spacing: 1.8px; color: var(--neon-pink); display: block; margin-top: 4px; opacity: 0.9; }
 
-
-
     audio {
-
       width: 100%;
-
       height: 30px;
-
       margin-bottom: 15px;
-
+      /* Makes the default player look neon/cyberpunk */
       filter: invert(90%) hue-rotate(180deg) brightness(1.2);
-
     }
-
-
-
-    /* Sticky Control Grid */
 
     .controls-grid {
-
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
       gap: 8px;
-
     }
-
-
 
     .nav-btn {
-
       background: transparent;
-
       border: 1px solid var(--neon-cyan);
-
       color: var(--neon-cyan);
-
       padding: 12px 0;
-
       font-family: 'Russo One', sans-serif;
-
       cursor: pointer;
-
       text-transform: uppercase;
-
       font-size: 11px;
-
       border-radius: 4px;
-
       position: relative;
-
       overflow: hidden;
-
       transition: all 0.2s;
-
     }
-
-
 
     .play-btn {
-
       background: rgba(0, 255, 255, 0.1);
-
       font-weight: bold;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 6px;
-
     }
-
-
 
     .play-btn::before {
-
       content: "";
-
       width: 0; height: 0;
-
       border-top: 5px solid transparent;
-
       border-bottom: 5px solid transparent;
-
       border-left: 8px solid var(--neon-cyan);
-
     }
 
-
-
+    /* Shine effect on the Play button */
     .play-btn::after {
-
       content: "";
-
       position: absolute;
-
       top: -50%; left: -60%;
-
       width: 20%; height: 200%;
-
       background: rgba(255, 255, 255, 0.3);
-
       transform: rotate(30deg);
-
       animation: shine 4s infinite;
-
     }
-
-
 
     @keyframes shine {
-
       0% { left: -60%; }
-
       15% { left: 120%; }
-
       100% { left: 120%; }
-
     }
-
-
 
     .nav-btn:active { transform: scale(0.96); }
 
-
-
     .loop-active {
-
       border-color: var(--neon-pink) !important;
-
       color: var(--neon-pink) !important;
-
       background: rgba(222, 112, 161, 0.1) !important;
-
     }
-
-
 
     /* --- SCROLLABLE PLAYLIST --- */
-
     .playlist-scroll-area {
-
       flex-grow: 1;
-
       overflow-y: auto;
-
       background: #0c0c0c;
-
     }
-
-
 
     .track {
-
       padding: 16px 20px;
-
       border-bottom: 1px solid #1a1a1a;
-
       cursor: pointer;
-
       display: flex;
-
       justify-content: space-between;
-
       align-items: center;
-
       font-size: 12px;
-
       transition: 0.2s;
-
     }
 
-
+    /* Added Hover Effect */
+    .track:hover {
+      background: rgba(0, 255, 255, 0.05);
+    }
 
     .track.active { 
-
       background: rgba(222, 112, 161, 0.08); 
-
       border-left: 3px solid var(--neon-pink);
-
       color: var(--neon-pink);
-
     }
-
-
 
     .duration-tag { font-size: 10px; opacity: 0.4; }
 
-
-
     ::-webkit-scrollbar { width: 4px; }
-
     ::-webkit-scrollbar-thumb { background: var(--neon-pink); }
-
   </style>
-
 </head>
-
 <body>
 
-
-
-  <!-- FIXED SECTION -->
-
   <div class="sticky-top">
-
     <div class="player-header">
-
       <span class="line-1">SAHIR QAWI</span>
-
       <span class="line-2">AGI ORIGINALS VOLUME 2</span>
-
     </div>
-
-
 
     <audio id="main-audio" controls controlsList="nodownload"></audio>
 
-
-
     <div class="controls-grid">
-
-      <button class="nav-btn play-btn" onclick="masterPlay()">Play</button>
-
+      <button class="nav-btn play-btn" onclick="masterPlay()">Play/Pause</button>
       <button id="loop-btn" class="nav-btn" onclick="toggleLoop()">Loop</button>
-
       <button class="nav-btn" onclick="prevTrack()">« Prev</button>
-
       <button class="nav-btn" onclick="nextTrack()">Next »</button>
-
     </div>
-
   </div>
-
-
-
-  <!-- SCROLLABLE SECTION -->
 
   <div class="playlist-scroll-area" id="playlist-container"></div>
 
-
-
 <script>
-
   const tracks = [
-
     { url: 'https://raw.githubusercontent.com/WaseemShaik26/Sahir-Qawi-Music-Volume-2/main/01_Sahir%20Qawi%20Watches.mp3', title: '01. SAHIR QAWI WATCHES' },
-
     { url: 'https://raw.githubusercontent.com/WaseemShaik26/Sahir-Qawi-Music-Volume-2/main/02_A%20Destiny%20Written%20in%20the%20Stars%20.mp3', title: '02. DESTINY IN THE STARS' },
-
     { url: 'https://raw.githubusercontent.com/WaseemShaik26/Sahir-Qawi-Music-Volume-2/main/03_The%20Cycle%20of%20Seasons.mp3', title: '03. CYCLE OF SEASONS' },
-
     { url: 'https://raw.githubusercontent.com/WaseemShaik26/Sahir-Qawi-Music-Volume-2/main/04_Gates%20of%20the%20Underworld.mp3', title: '04. GATES OF UNDERWORLD' },
-
     { url: 'https://raw.githubusercontent.com/WaseemShaik26/Sahir-Qawi-Music-Volume-2/main/05_A%20Shamisen%20Sonata.mp3', title: '05. SHAMISEN SONATA' }
-
   ];
 
-
-
   let currentTrackIndex = -1;
-
   let isLooping = false;
-
   const audio = document.getElementById('main-audio');
-
   const playlistDiv = document.getElementById('playlist-container');
-
   const loopBtn = document.getElementById('loop-btn');
 
-
-
   function formatTime(seconds) {
-
     if (isNaN(seconds)) return "--:--";
-
     const mins = Math.floor(seconds / 60);
-
     const secs = Math.floor(seconds % 60);
-
     return mins + ":" + (secs < 10 ? '0' : '') + secs;
-
   }
-
-
 
   function loadDurations() {
-
     tracks.forEach((track, index) => {
-
       const tempAudio = new Audio();
-
       tempAudio.src = track.url;
-
       tempAudio.addEventListener('loadedmetadata', () => {
-
         track.duration = formatTime(tempAudio.duration);
-
         buildPlaylist();
-
       });
-
     });
-
   }
-
-
 
   function buildPlaylist() {
-
     playlistDiv.innerHTML = '';
-
     tracks.forEach((track, index) => {
-
       const trackEl = document.createElement('div');
-
       trackEl.className = 'track' + (index === currentTrackIndex ? ' active' : '');
-
       trackEl.innerHTML = `
-
         <span>${track.title}</span>
-
         <span class="duration-tag">${index === currentTrackIndex ? 'PLAYING' : (track.duration || '...')}</span>
-
       `;
-
       trackEl.onclick = () => playTrack(index);
-
       playlistDiv.appendChild(trackEl);
-
     });
-
   }
-
-
 
   function masterPlay() {
-
     if (currentTrackIndex === -1) {
-
       playTrack(0);
-
     } else {
-
       if (audio.paused) audio.play();
-
       else audio.pause();
-
     }
-
   }
-
-
 
   function playTrack(index) {
-
     if (index < 0 || index >= tracks.length) return;
-
     currentTrackIndex = index;
-
     audio.src = tracks[currentTrackIndex].url;
-
     audio.play();
-
     buildPlaylist();
-
   }
-
-
 
   function nextTrack() {
-
     let nextIndex = (currentTrackIndex + 1) % tracks.length;
-
     playTrack(nextIndex);
-
   }
-
-
 
   function prevTrack() {
-
     let prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-
     playTrack(prevIndex);
-
   }
-
-
 
   function toggleLoop() {
-
     isLooping = !isLooping;
-
     loopBtn.classList.toggle('loop-active', isLooping);
-
   }
 
-
-
   audio.onended = () => {
-
     if (isLooping) {
-
       audio.currentTime = 0;
-
       audio.play();
-
     } else {
-
       nextTrack();
-
     }
-
   };
 
-
-
   buildPlaylist();
-
   loadDurations();
-
 </script>
 
-
-
 </body>
-
-</html> 
+</html>
