@@ -31,7 +31,6 @@
       flex-direction: column;
     }
 
-    /* --- PORTRAIT STICKY TOP --- */
     .sticky-top {
       flex-shrink: 0;
       padding: 15px 15px 12px;
@@ -45,25 +44,25 @@
     .line-1 { font-size: 22px; letter-spacing: 3px; display: block; }
     .line-2 { font-size: 10px; letter-spacing: 1.5px; color: var(--neon-pink); display: block; margin-top: 2px; }
 
-    .cta-container { margin-bottom: 15px; }
-    .expand-btn {
-      display: inline-flex;
-      align-items: center;
+    /* --- LOGO IMAGE STYLING --- */
+    .logo-container {
+      width: 100%;
+      margin: 10px auto 15px;
+      display: flex;
       justify-content: center;
-      border: 1px solid var(--neon-pink);
-      color: var(--neon-pink);
-      padding: 10px 15px;
-      text-decoration: none;
-      font-size: 9px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      background: rgba(222, 112, 161, 0.1);
-      box-shadow: 0 0 10px rgba(222, 112, 161, 0.2);
+      align-items: center;
+    }
+
+    .player-logo {
+      width: 180px; 
+      max-width: 50vw;
+      height: auto;
+      filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3));
     }
 
     /* --- NOW PLAYING DISPLAY --- */
     .now-playing-display {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       padding: 8px 12px;
       background: rgba(222, 112, 161, 0.05);
       border: 1px solid rgba(222, 112, 161, 0.2);
@@ -105,12 +104,10 @@
       100% { transform: translate(-100%, 0); }
     }
 
-    /* Aggressive Suppression of Native Player */
     audio {
       display: none !important;
       visibility: hidden !important;
       position: absolute;
-      width: 0; height: 0;
     }
 
     /* --- SINGLE LINE CONTROLS --- */
@@ -202,10 +199,9 @@
       <span class="line-2">AGI ORIGINALS VOLUME 2</span>
     </div>
 
-    <div class="cta-container">
-      <a href="https://sahirqawi.github.io/Sahir-Qawi-Music-Volume-2/" target="_blank" class="expand-btn">
-        Tap to Expand for Best Experience
-      </a>
+    <!-- LOGO ADDED HERE -->
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/MTkHkR3q/YT-LOGO.png" alt="Sahir Qawi Logo" class="player-logo">
     </div>
 
     <div class="now-playing-display" id="display-box">
